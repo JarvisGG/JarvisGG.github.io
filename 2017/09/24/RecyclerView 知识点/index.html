@@ -77,7 +77,7 @@
 <link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="Hexo, NexT" />
+  <meta name="keywords" content="Android View," />
 
 
 
@@ -93,15 +93,17 @@
 
 
 
-<meta name="description" content="搬砖技术哪家强">
-<meta property="og:type" content="website">
-<meta property="og:title" content="JarvisBlog">
-<meta property="og:url" content="http://yoursite.com/archives/2016/index.html">
+<meta name="description" content="前言好久没写博客了，到新公司差不多一个月了，之前做Android TV 开发，现在开始做手机端了，写手机端App 或许是一个很久的执念吧。就最近的页面需求，好好研究了一下ViewGroup，RecyclerView 的绘制，这里打算立个flag，记一下自己踩的坑。 关于 RecyclerView 绘制1.itemDecoration">
+<meta name="keywords" content="Android View">
+<meta property="og:type" content="article">
+<meta property="og:title" content="RecyclerView 知识点">
+<meta property="og:url" content="http://yoursite.com/2017/09/24/RecyclerView 知识点/index.html">
 <meta property="og:site_name" content="JarvisBlog">
-<meta property="og:description" content="搬砖技术哪家强">
+<meta property="og:description" content="前言好久没写博客了，到新公司差不多一个月了，之前做Android TV 开发，现在开始做手机端了，写手机端App 或许是一个很久的执念吧。就最近的页面需求，好好研究了一下ViewGroup，RecyclerView 的绘制，这里打算立个flag，记一下自己踩的坑。 关于 RecyclerView 绘制1.itemDecoration">
+<meta property="og:updated_time" content="2017-09-25T11:38:51.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="JarvisBlog">
-<meta name="twitter:description" content="搬砖技术哪家强">
+<meta name="twitter:title" content="RecyclerView 知识点">
+<meta name="twitter:description" content="前言好久没写博客了，到新公司差不多一个月了，之前做Android TV 开发，现在开始做手机端了，写手机端App 或许是一个很久的执念吧。就最近的页面需求，好好研究了一下ViewGroup，RecyclerView 的绘制，这里打算立个flag，记一下自己踩的坑。 关于 RecyclerView 绘制1.itemDecoration">
 
 
 
@@ -129,13 +131,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/archives/2016/"/>
+  <link rel="canonical" href="http://yoursite.com/2017/09/24/RecyclerView 知识点/"/>
 
 
 
 
 
-  <title>归档 | JarvisBlog</title>
+  <title>RecyclerView 知识点 | JarvisBlog</title>
   
 
 
@@ -160,7 +162,7 @@
     
   
 
-  <div class="container sidebar-position-left  page-archive  ">
+  <div class="container sidebar-position-left page-post-detail ">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -254,66 +256,160 @@
           <div id="content" class="content">
             
 
-  <section id="posts" class="posts-collapse">
-    <span class="archive-move-on"></span>
+  <div id="posts" class="posts-expand">
+    
 
-    <span class="archive-page-counter">
-      
-      
-      
-        
-      
-      嗯..! 目前共计 6 篇日志。 继续努力。
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/09/24/RecyclerView 知识点/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jarvis">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://avatars3.githubusercontent.com/u/7964606?v=3&s=460">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="JarvisBlog">
     </span>
 
     
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">RecyclerView 知识点</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-09-24T16:22:04+08:00">
+                2017-09-24
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2017/09/24/RecyclerView 知识点/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2017/09/24/RecyclerView 知识点/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
 
       
       
-      
 
+      
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>好久没写博客了，到新公司差不多一个月了，之前做Android TV 开发，现在开始做手机端了，写手机端App 或许是一个很久的执念吧。<br>就最近的页面需求，好好研究了一下ViewGroup，RecyclerView 的绘制，这里打算立个flag，记一下自己踩的坑。</p>
+<h2 id="关于-RecyclerView-绘制"><a href="#关于-RecyclerView-绘制" class="headerlink" title="关于 RecyclerView 绘制"></a>关于 RecyclerView 绘制</h2><p><iframe height="500" width="500" src="http://ww4.sinaimg.cn/mw690/e75a115bgw1f3rrbzv1m8g209v0diqv7.gif"><br>1.itemDecoration</iframe></p>
+
+      
+    </div>
+
+    <div>
       
         
-        <div class="collection-title">
-          <h2 class="archive-year motion-element" id="archive-year-2016">2016</h2>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Android-View/" rel="tag"># Android View</a>
+          
         </div>
       
+
+      
+      
       
 
       
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/07/20/Android TV 焦点丢失的罪魁祸首/" rel="next" title="Android TV 焦点探索">
+                <i class="fa fa-chevron-left"></i> Android TV 焦点探索
+              </a>
+            
+          </div>
 
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
+          <span class="post-nav-divider"></span>
 
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/2016/08/11/Dagger2体会/" itemprop="url">
-              
-                <span itemprop="name">Dagger2体会</span>
-              
-            </a>
-        
-      </h2>
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
 
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2016-08-11T17:01:56+08:00"
-              content="2016-08-11" >
-          08-11
-        </time>
-      </div>
-
-    </header>
+      
+      
+    </footer>
   </article>
 
 
 
-    
-
-  </section>
-
-  
-
+    <div class="post-spread">
+      
+    </div>
+  </div>
 
 
           </div>
@@ -321,6 +417,17 @@
 
 
           
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
 
         </div>
         
@@ -340,8 +447,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview sidebar-panel sidebar-panel-active">
+      <section class="site-overview sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image"
                src="https://avatars3.githubusercontent.com/u/7964606?v=3&s=460"
@@ -446,6 +562,22 @@
 
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#关于-RecyclerView-绘制"><span class="nav-number">2.</span> <span class="nav-text">关于 RecyclerView 绘制</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
@@ -559,11 +691,9 @@
   
 
   
-  
-    <script type="text/javascript" id="motion.page.archive">
-      $('.archive-year').velocity('transition.slideLeftIn');
-    </script>
-  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
 
 
   
@@ -582,6 +712,18 @@
       <script id="dsq-count-scr" src="https://https-jarvisgg-github-io.disqus.com/count.js" async></script>
     
 
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://yoursite.com/2017/09/24/RecyclerView 知识点/';
+          this.page.identifier = '2017/09/24/RecyclerView 知识点/';
+          this.page.title = 'RecyclerView 知识点';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://https-jarvisgg-github-io.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
     
 
   

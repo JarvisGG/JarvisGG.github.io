@@ -77,7 +77,7 @@
 <link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="Hexo, NexT" />
+  <meta name="keywords" content="Android 源码," />
 
 
 
@@ -93,16 +93,17 @@
 
 
 
-<meta name="description" content="About个人作品Android app暴风TV:    Launcher    视频通话    消息中心    DLNAAndroid 开源库    VideoPlayer">
-<meta property="og:type" content="website">
-<meta property="og:title" content="JarvisBlog">
-<meta property="og:url" content="http://yoursite.com/about/index.html">
+<meta name="description" content="前言毕业从事Android TV 开发一年了，这一年萦绕着我，挥之不去的就是焦点逻辑，TV 区别于手机的UI交互区别，应该就是focus事件与touch事件了，而国内关于Android TV的盘子还不如手机端踩得多，那么今天打算总结一下焦点的几个疑惑。这里我会分焦点搜索，焦点丢失来谈谈。踩踩盘子。">
+<meta name="keywords" content="Android 源码">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android TV 焦点探索">
+<meta property="og:url" content="http://yoursite.com/2017/07/20/Android TV 焦点丢失的罪魁祸首/index.html">
 <meta property="og:site_name" content="JarvisBlog">
-<meta property="og:description" content="About个人作品Android app暴风TV:    Launcher    视频通话    消息中心    DLNAAndroid 开源库    VideoPlayer">
-<meta property="og:updated_time" content="2017-07-03T11:59:50.000Z">
+<meta property="og:description" content="前言毕业从事Android TV 开发一年了，这一年萦绕着我，挥之不去的就是焦点逻辑，TV 区别于手机的UI交互区别，应该就是focus事件与touch事件了，而国内关于Android TV的盘子还不如手机端踩得多，那么今天打算总结一下焦点的几个疑惑。这里我会分焦点搜索，焦点丢失来谈谈。踩踩盘子。">
+<meta property="og:updated_time" content="2017-07-21T17:18:14.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="JarvisBlog">
-<meta name="twitter:description" content="About个人作品Android app暴风TV:    Launcher    视频通话    消息中心    DLNAAndroid 开源库    VideoPlayer">
+<meta name="twitter:title" content="Android TV 焦点探索">
+<meta name="twitter:description" content="前言毕业从事Android TV 开发一年了，这一年萦绕着我，挥之不去的就是焦点逻辑，TV 区别于手机的UI交互区别，应该就是focus事件与touch事件了，而国内关于Android TV的盘子还不如手机端踩得多，那么今天打算总结一下焦点的几个疑惑。这里我会分焦点搜索，焦点丢失来谈谈。踩踩盘子。">
 
 
 
@@ -130,13 +131,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/about/"/>
+  <link rel="canonical" href="http://yoursite.com/2017/07/20/Android TV 焦点丢失的罪魁祸首/"/>
 
 
 
 
 
-  <title> | JarvisBlog</title>
+  <title>Android TV 焦点探索 | JarvisBlog</title>
   
 
 
@@ -256,19 +257,164 @@
             
 
   <div id="posts" class="posts-expand">
-  <header class="post-header">
+    
 
-	<h1 class="post-title" itemprop="name headline"></h1>
+  
 
+  
+  
+  
 
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/07/20/Android TV 焦点丢失的罪魁祸首/">
 
-</header>
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jarvis">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://avatars3.githubusercontent.com/u/7964606?v=3&s=460">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="JarvisBlog">
+    </span>
 
     
-    
-      <p>About<br>个人作品<br>Android app<br>暴风TV:<br>    Launcher<br>    视频通话<br>    消息中心<br>    DLNA<br>Android 开源库<br>    VideoPlayer</p>
+      <header class="post-header">
 
+        
+        
+          <h1 class="post-title" itemprop="name headline">Android TV 焦点探索</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-07-20T01:06:56+08:00">
+                2017-07-20
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2017/07/20/Android TV 焦点丢失的罪魁祸首/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2017/07/20/Android TV 焦点丢失的罪魁祸首/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
     
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>毕业从事Android TV 开发一年了，这一年萦绕着我，挥之不去的就是焦点逻辑，TV 区别于手机的UI交互区别，应该就是focus事件与touch事件了，而国内关于Android TV的盘子还不如手机端踩得多，那么今天打算总结一下焦点的几个疑惑。这里我会分焦点搜索，焦点丢失来谈谈。踩踩盘子。<br><a id="more"></a></p>
+<h2 id="焦点搜索"><a href="#焦点搜索" class="headerlink" title="焦点搜索"></a>焦点搜索</h2><p>这块儿Android源码很有意思，谷歌爹们真的牛啊，好了，当我们用遥控器按上下左右键的时候，我们会调用focusSearch，我们结合源码看一下.<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> View <span class="title">focusSearch</span><span class="params">(@FocusRealDirection <span class="keyword">int</span> direction)</span> </span>&#123;</div><div class="line">    <span class="keyword">if</span> (mParent != <span class="keyword">null</span>) &#123;</div><div class="line">        <span class="keyword">return</span> mParent.focusSearch(<span class="keyword">this</span>, direction);</div><div class="line">    &#125; <span class="keyword">else</span> &#123;</div><div class="line">        <span class="keyword">return</span> <span class="keyword">null</span>;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>focus 当前获得焦点的View，direction当前按键事件方向，我们可以看到这里View会将焦点上抛给Parent，接个我们进去看。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> View <span class="title">focusSearch</span><span class="params">(View focused, <span class="keyword">int</span> direction)</span> </span>&#123;</div><div class="line">    <span class="keyword">if</span> (isRootNamespace()) &#123;</div><div class="line">        <span class="comment">// root namespace means we should consider ourselves the top of the</span></div><div class="line">        <span class="comment">// tree for focus searching; otherwise we could be focus searching</span></div><div class="line">        <span class="comment">// into other tabs.  see LocalActivityManager and TabHost for more info</span></div><div class="line">        <span class="keyword">return</span> FocusFinder.getInstance().findNextFocus(<span class="keyword">this</span>, focused, direction);</div><div class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (mParent != <span class="keyword">null</span>) &#123;</div><div class="line">        <span class="keyword">return</span> mParent.focusSearch(focused, direction);</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> <span class="keyword">null</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>这里我们看到有一个是否是根空间的判断，倘若当前</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Android-源码/" rel="tag"># Android 源码</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/06/20/RxBus 的初步探索/" rel="next" title="RxBus 的初步探索">
+                <i class="fa fa-chevron-left"></i> RxBus 的初步探索
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/09/24/RecyclerView 知识点/" rel="prev" title="RecyclerView 知识点">
+                RecyclerView 知识点 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
   </div>
 
 
@@ -307,8 +453,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview sidebar-panel sidebar-panel-active">
+      <section class="site-overview sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image"
                src="https://avatars3.githubusercontent.com/u/7964606?v=3&s=460"
@@ -413,6 +568,22 @@
 
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#焦点搜索"><span class="nav-number">2.</span> <span class="nav-text">焦点搜索</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
@@ -526,10 +697,10 @@
   
 
   
-    <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
 <script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
 
-  
+
 
   
 
@@ -550,9 +721,9 @@
     
       <script type="text/javascript">
         var disqus_config = function () {
-          this.page.url = 'http://yoursite.com/about/index.html';
-          this.page.identifier = 'about/index.html';
-          this.page.title = '';
+          this.page.url = 'http://yoursite.com/2017/07/20/Android TV 焦点丢失的罪魁祸首/';
+          this.page.identifier = '2017/07/20/Android TV 焦点丢失的罪魁祸首/';
+          this.page.title = 'Android TV 焦点探索';
         };
         var d = document, s = d.createElement('script');
         s.src = 'https://https-jarvisgg-github-io.disqus.com/embed.js';
