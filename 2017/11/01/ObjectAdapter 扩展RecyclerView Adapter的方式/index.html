@@ -100,7 +100,7 @@
 <meta property="og:url" content="http://yoursite.com/2017/11/01/ObjectAdapter 扩展RecyclerView Adapter的方式/index.html">
 <meta property="og:site_name" content="JarvisBlog">
 <meta property="og:description" content="前言起因，随着业务的开展，我们的Feed列表有时会增加好多的卡片类型，而过多的卡片就会引发过多的 ViewHolder，ViewType 造成Adapter路基冗杂。那么本篇博客就是基于这个问题做的Adapter 扩展。">
-<meta property="og:updated_time" content="2017-11-01T11:01:04.000Z">
+<meta property="og:updated_time" content="2017-12-05T11:04:12.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="ObjectAdapter 扩展RecyclerView Adapter的方式">
 <meta name="twitter:description" content="前言起因，随着业务的开展，我们的Feed列表有时会增加好多的卡片类型，而过多的卡片就会引发过多的 ViewHolder，ViewType 造成Adapter路基冗杂。那么本篇博客就是基于这个问题做的Adapter 扩展。">
@@ -224,6 +224,16 @@
               <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
             
             标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-search">
+          <a href="/search/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-search"></i> <br />
+            
+            搜索
           </a>
         </li>
       
@@ -365,7 +375,7 @@
 <p>删除：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">objectAdapter.remove(indexTypeEnum1);</div><div class="line">objectAdapter.remove(<span class="number">1</span>);</div></pre></td></tr></table></figure></p>
 <p>移动：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">objectAdapter.move(<span class="number">1</span>,<span class="number">2</span>);</div></pre></td></tr></table></figure></p>
 <h3 id="小节"><a href="#小节" class="headerlink" title="小节"></a>小节</h3><p>这里我们可以看到，优化前Adapter是很冗杂的，但优化后，我们可以按职责详细划分这里的业务逻辑.<br><br>1.我们这里通过 PresenterSelector 来总结当前所有的卡片种类（Presenter).<br><br>2.将我们不同的卡片业务逻辑划分到对应的 Presenter.<br><br>3.关于基本操作全部封装在 ObjectAdapter.<br></p>
-
+<h3 id="How-to-use"><a href="#How-to-use" class="headerlink" title="How to use?"></a>How to use?</h3><figure class="highlight gradle"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">repositories</span> &#123;</div><div class="line">    <span class="comment">// ...</span></div><div class="line">    maven &#123; url <span class="string">"https://jitpack.io"</span> &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">dependencies</span> &#123;</div><div class="line">    <span class="keyword">compile</span> <span class="string">'com.jarvis.library:ObjectAdapter:1.0'</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
       
     </div>
 
@@ -617,7 +627,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#扩展对比"><span class="nav-number">2.</span> <span class="nav-text">扩展对比</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#扩展前"><span class="nav-number">2.1.</span> <span class="nav-text">扩展前</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#扩展后"><span class="nav-number">2.2.</span> <span class="nav-text">扩展后</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#小节"><span class="nav-number">2.3.</span> <span class="nav-text">小节</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#扩展对比"><span class="nav-number">2.</span> <span class="nav-text">扩展对比</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#扩展前"><span class="nav-number">2.1.</span> <span class="nav-text">扩展前</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#扩展后"><span class="nav-number">2.2.</span> <span class="nav-text">扩展后</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#小节"><span class="nav-number">2.3.</span> <span class="nav-text">小节</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#How-to-use"><span class="nav-number">2.4.</span> <span class="nav-text">How to use?</span></a></li></ol></li></ol></div>
             
 
           </div>
