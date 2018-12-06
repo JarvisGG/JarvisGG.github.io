@@ -1,0 +1,985 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Android 开源控件," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="前言今年年初接触回答页面改版，由之前的左右滑动回答改为上下滑动回答，由于当时回答页的代码太过于庞大，所以第一次改版复用了之前的 UI 框架，外层 ViewPager + Fragment，内层是 WebView 嵌套 Hybrid 页面。 问题出现了，WebView 可以滚动的时候，会持有整个 Touch 事件流程，导致当 webView 拖拽到底部，手指不脱离屏幕继续拖拽的时候，无法将当前的拖">
+<meta name="keywords" content="Android 开源控件">
+<meta property="og:type" content="article">
+<meta property="og:title" content="NestTouchScrollingLayout 无缝拖拽的 Layout">
+<meta property="og:url" content="http://yoursite.com/2018/12/05/NestTouchScrollingLayout 无缝滑动的 Layout/index.html">
+<meta property="og:site_name" content="JarvisBlog">
+<meta property="og:description" content="前言今年年初接触回答页面改版，由之前的左右滑动回答改为上下滑动回答，由于当时回答页的代码太过于庞大，所以第一次改版复用了之前的 UI 框架，外层 ViewPager + Fragment，内层是 WebView 嵌套 Hybrid 页面。 问题出现了，WebView 可以滚动的时候，会持有整个 Touch 事件流程，导致当 webView 拖拽到底部，手指不脱离屏幕继续拖拽的时候，无法将当前的拖">
+<meta property="og:image" content="https://github.com/JarvisGG/NestedTouchScrollingLayout/blob/master/captures/demo1.gif?raw=true">
+<meta property="og:image" content="https://github.com/JarvisGG/NestedTouchScrollingLayout/blob/master/captures/demo2.gif?raw=true">
+<meta property="og:image" content="https://github.com/JarvisGG/NestedTouchScrollingLayout/blob/master/captures/demo3.gif?raw=true">
+<meta property="og:image" content="https://github.com/JarvisGG/NestedTouchScrollingLayout/blob/master/captures/demo4.gif?raw=true">
+<meta property="og:updated_time" content="2018-12-06T16:40:18.384Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="NestTouchScrollingLayout 无缝拖拽的 Layout">
+<meta name="twitter:description" content="前言今年年初接触回答页面改版，由之前的左右滑动回答改为上下滑动回答，由于当时回答页的代码太过于庞大，所以第一次改版复用了之前的 UI 框架，外层 ViewPager + Fragment，内层是 WebView 嵌套 Hybrid 页面。 问题出现了，WebView 可以滚动的时候，会持有整个 Touch 事件流程，导致当 webView 拖拽到底部，手指不脱离屏幕继续拖拽的时候，无法将当前的拖">
+<meta name="twitter:image" content="https://github.com/JarvisGG/NestedTouchScrollingLayout/blob/master/captures/demo1.gif?raw=true">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"always","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/12/05/NestTouchScrollingLayout 无缝滑动的 Layout/"/>
+
+
+
+
+
+  <title>NestTouchScrollingLayout 无缝拖拽的 Layout | JarvisBlog</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">JarvisBlog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-search">
+          <a href="/search/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-search"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/12/05/NestTouchScrollingLayout 无缝滑动的 Layout/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jarvis">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://avatars3.githubusercontent.com/u/7964606?v=3&s=460">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="JarvisBlog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">NestTouchScrollingLayout 无缝拖拽的 Layout</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-12-05T23:16:00+08:00">
+                2018-12-05
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/12/05/NestTouchScrollingLayout 无缝滑动的 Layout/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2018/12/05/NestTouchScrollingLayout 无缝滑动的 Layout/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+             <span id="/2018/12/05/NestTouchScrollingLayout 无缝滑动的 Layout/" class="leancloud_visitors" data-flag-title="NestTouchScrollingLayout 无缝拖拽的 Layout">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数 </span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>今年年初接触回答页面改版，由之前的左右滑动回答改为上下滑动回答，由于当时回答页的代码太过于庞大，所以第一次改版复用了之前的 UI 框架，外层 ViewPager + Fragment，内层是 WebView 嵌套 Hybrid 页面。</p>
+<p>问题出现了，WebView 可以滚动的时候，会持有整个 Touch 事件流程，导致当 webView 拖拽到底部，手指不脱离屏幕继续拖拽的时候，无法将当前的拖拽操作给翻页器，产生体验上的割裂感。</p>
+<p>接下来就是 UI 交互优化的历程<br><a id="more"></a></p>
+<h2 id="调研"><a href="#调研" class="headerlink" title="调研"></a>调研</h2><h3 id="1-NestedScrolling"><a href="#1-NestedScrolling" class="headerlink" title="1.NestedScrolling:"></a>1.NestedScrolling:</h3><p>Support V4 提供了一套 API 来支持嵌入的滑动效果。NestedScrolling 提供了一套父 View 和子 View 滑动交互机制。要完成这样的交互，父 View 需要实现 NestedScrollingParent 接口，而子 View 需要实现 NestedScrollingChild 接口。</p>
+<p>作为一个可以嵌入 NestedScrollingChild 的父 View，需要实现 NestedScrollingParent，这个接口方法和 NestedScrollingChild 大致有一一对应的关系。同样，也有一个 NestedScrollingParentHelper 辅助类来默默的帮助你实现和 Child 交互的逻辑。滑动动作是 Child 主动发起，Parent 就收滑动回调并作出响应。</p>
+<p>从上面的 Child 分析可知，滑动开始的调用 startNestedScroll()，Parent 收到 onStartNestedScroll() 回调，决定是否需要配合 Child 一起进行处理滑动，如果需要配合，还会回调 onNestedScrollAccepted()。</p>
+<p>每次滑动前，Child 先询问 Parent 是否需要滑动，即 dispatchNestedPreScroll()，这就回调到 Parent 的 onNestedPreScroll()，Parent 可以在这个回调中“劫持”掉 Child 的滑动，也就是先于 Child 滑动。</p>
+<p>Child 滑动以后，会调用 onNestedScroll()，回调到 Parent 的 onNestedScroll()，这里就是 Child 滑动后，剩下的给 Parent 处理，也就是 后于 Child 滑动。</p>
+<p>最后，滑动结束，调用 onStopNestedScroll() 表示本次处理结束。<br><br>这个方案其实很不错，但最后被 pass 了，因为由于工程的原因，我们的 webview 是被包裹起来的，不可以任意去继承 NestedScrollingChild 并做定制修改。</p>
+<h3 id="2-自定义-ViewGroup"><a href="#2-自定义-ViewGroup" class="headerlink" title="2.自定义 ViewGroup"></a>2.自定义 ViewGroup</h3><p>其实目前的问题是当子 View scroll 到顶部或者底部的时候，无法将 Touch 事件流交还给父布局。<br>因此这里我采用的思路是通过我的 ViewGroup 去统一 dispatchTouchEvent 给我的子 View，条件就是，假如子 View 可以滚动，我就会构造一套完整的 touch 时间流分发给他。否则我会自己消化。</p>
+<h2 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h2><h3 id="step-1"><a href="#step-1" class="headerlink" title="step 1:"></a>step 1:</h3><p>通过第二种方式的思路，我们第一步需要在我的 ViewGroup 拦截所有的 Touch 事件。所以…<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Override</span></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">onInterceptTouchEvent</span><span class="params">(MotionEvent ev)</span> </span>&#123;</div><div class="line">    <span class="keyword">if</span> (isParentDispatchTouchEvent) &#123;</div><div class="line">        <span class="keyword">return</span> <span class="keyword">true</span>;</div><div class="line">    &#125; <span class="keyword">else</span> &#123;</div><div class="line">        <span class="keyword">return</span> <span class="keyword">super</span>.onInterceptTouchEvent(ev);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>上来我们就拦截出所有的 Touch 事件。</p>
+<h3 id="step2"><a href="#step2" class="headerlink" title="step2:"></a>step2:</h3><p>开始在 ViewGroup 的 onTouchEvent 处理所有相关的 Event。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 1.初始记录 Touch 坐标</span></div><div class="line"><span class="keyword">int</span> mDownY = event.getY();</div><div class="line"><span class="keyword">int</span> deltaY = <span class="number">0</span>;</div><div class="line"></div><div class="line"><span class="comment">// 2.默认子 View 持有事件流起始点 isHoldTouch = true,通过 isChildCanScroll 来判别当前子 View 是否可以滚动。</span></div><div class="line"><span class="keyword">if</span> (isHoldTouch &amp;&amp; !isChildCanScroll(event, deltaY) &amp;&amp; deltaY != <span class="number">0</span>) &#123;</div><div class="line">    <span class="comment">// 3.假如子 View 不可以滚动，当前 ViewGroup 需要阻断 Touch 的下发，为了遵循 Touch 事件流的规范，当被外部阻断时，需要对其下发 ACTION_CANEL。同时 isHoldTouch = false。</span></div><div class="line">    isHoldTouch = <span class="keyword">false</span>;</div><div class="line">    MotionEvent cancelEvent = MotionEvent.obtain(event);</div><div class="line">    cancelEvent.setAction(MotionEvent.ACTION_CANCEL);</div><div class="line">    getChildAt(<span class="number">0</span>).dispatchTouchEvent(cancelEvent);</div><div class="line">    cancelEvent.recycle();</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// 5.假如当我们在 ViewGroup 滚动过程中，滑动到了子 View 可滚动的状态，这时候会将 ViewGroup 调整至滚动初始位置，然后对子 View 做一个 ACTION_DOWN 的操作，从而开始陆续分发子 View Touch 事件。同时 isHoldTouch = true。</span></div><div class="line"><span class="keyword">if</span> (!isHoldTouch &amp;&amp; isChildCanScroll(event, deltaY) &amp;&amp; deltaY != <span class="number">0</span>) &#123;</div><div class="line">    setSheetTranslation(maxSheetTranslation);</div><div class="line">    isHoldTouch = <span class="keyword">true</span>;</div><div class="line">    <span class="keyword">if</span> (event.getAction() == MotionEvent.ACTION_MOVE) &#123;</div><div class="line">        MotionEvent downEvent = MotionEvent.obtain(event);</div><div class="line">        downEvent.setAction(MotionEvent.ACTION_DOWN);</div><div class="line">        getChildAt(<span class="number">0</span>).dispatchTouchEvent(downEvent);</div><div class="line">        downEvent.recycle();</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">if</span> (isHoldTouch &amp;&amp; deltaY != <span class="number">0</span>) &#123;</div><div class="line">    <span class="comment">// 6.当前判断子 View 已经处于可分发 Touch 状态，会陆续将 ACTION_MOVE 分发给他。从而实现子 View 的滚动。</span></div><div class="line">    event.offsetLocation(<span class="number">0</span>, mSheetTranslation - mTouchParentViewOriginMeasureHeight);</div><div class="line">    getChildAt(<span class="number">0</span>).dispatchTouchEvent(event);</div><div class="line">&#125; <span class="keyword">else</span> &#123;</div><div class="line">    <span class="comment">// 4.当上面阻断完 Touch 的下发以后，这里我们开始自己消化 Touch 事件，也就是这里会做一个 TranslationY 修改，从而达到 ViewGroup 做 Y轴方向的偏移.</span></div><div class="line">    setSheetTranslation(newSheetTranslation);</div><div class="line"></div><div class="line">    <span class="keyword">if</span> (event.getAction() == MotionEvent.ACTION_UP || event.getAction() == MotionEvent.ACTION_CANCEL) &#123;</div><div class="line">        <span class="comment">// 7.为了将这个结束事件后面分发给子 View</span></div><div class="line">        isHoldTouch = <span class="keyword">true</span>;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h3 id="step3"><a href="#step3" class="headerlink" title="step3:"></a>step3:</h3><p>判断子 View 是否可以滚动<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div></pre></td><td class="code"><pre><div class="line"> <span class="comment">/**</span></div><div class="line">    * child can scroll</div><div class="line">    * <span class="doctag">@param</span> view</div><div class="line">    * <span class="doctag">@param</span> x</div><div class="line">    * <span class="doctag">@param</span> y</div><div class="line">    * <span class="doctag">@param</span> lockRect 是否开启 允许 touch 脱离当前子 View 区域继续生效。</div><div class="line">    * <span class="doctag">@return</span></div><div class="line">    */</div><div class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">boolean</span> <span class="title">canScrollUp</span><span class="params">(View view, <span class="keyword">float</span> x, <span class="keyword">float</span> y, <span class="keyword">boolean</span> lockRect)</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="keyword">if</span> (view <span class="keyword">instanceof</span> WebView) &#123;</div><div class="line">        <span class="keyword">return</span> canWebViewScrollUp();</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">if</span> (view <span class="keyword">instanceof</span> ViewGroup) &#123;</div><div class="line">        ViewGroup vg = (ViewGroup) view;</div><div class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; vg.getChildCount(); i++) &#123;</div><div class="line">            View child = vg.getChildAt(i);</div><div class="line">            <span class="keyword">int</span> childLeft = child.getLeft() - view.getScrollX();</div><div class="line">            <span class="keyword">int</span> childTop = child.getTop() - view.getScrollY();</div><div class="line">            <span class="keyword">int</span> childRight = child.getRight() - view.getScrollX();</div><div class="line">            <span class="keyword">int</span> childBottom = child.getBottom() - view.getScrollY();</div><div class="line">            <span class="keyword">boolean</span> intersects = x &gt; childLeft &amp;&amp; x &lt; childRight &amp;&amp; y &gt; childTop &amp;&amp; y &lt; childBottom;</div><div class="line">            <span class="keyword">if</span> ((!lockRect || intersects)</div><div class="line">                    &amp;&amp; canScrollUp(child, x - childLeft, y - childTop, lockRect)) &#123;</div><div class="line">                <span class="keyword">return</span> <span class="keyword">true</span>;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">if</span> (view <span class="keyword">instanceof</span> CoordinatorLayout &amp;&amp;</div><div class="line">            ((CoordinatorLayout) view).getChildCount() &gt; <span class="number">0</span> &amp;&amp;</div><div class="line">            ((CoordinatorLayout) view).getChildAt(<span class="number">0</span>) <span class="keyword">instanceof</span> AppBarLayout) &#123;</div><div class="line">        AppBarLayout layout = (AppBarLayout) ((CoordinatorLayout) view).getChildAt(<span class="number">0</span>);</div><div class="line">        OnNestOffsetChangedListener listener = mOnOffsetChangedListener.get(layout.hashCode());</div><div class="line">        <span class="keyword">if</span> (listener != <span class="keyword">null</span>) &#123;</div><div class="line">            <span class="keyword">if</span> (listener.getOffsetY() &lt; layout.getMeasuredHeight() &amp;&amp; listener.getOffsetY() &gt; <span class="number">0</span>) &#123;</div><div class="line">                <span class="keyword">return</span> <span class="keyword">true</span>;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">return</span> view.canScrollVertically(-<span class="number">1</span>);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">/**</span></div><div class="line">    * child can scroll</div><div class="line">    * <span class="doctag">@param</span> view</div><div class="line">    * <span class="doctag">@param</span> x</div><div class="line">    * <span class="doctag">@param</span> y</div><div class="line">    * <span class="doctag">@param</span> lockRect 是否开启 允许 touch 脱离当前子 View 区域继续生效。</div><div class="line">    * <span class="doctag">@return</span></div><div class="line">    */</div><div class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">boolean</span> <span class="title">canScrollDown</span><span class="params">(View view, <span class="keyword">float</span> x, <span class="keyword">float</span> y, <span class="keyword">boolean</span> lockRect)</span> </span>&#123;</div><div class="line">    <span class="keyword">if</span> (view <span class="keyword">instanceof</span> WebView) &#123;</div><div class="line">        <span class="keyword">return</span> canWebViewScrollDown();</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">if</span> (view <span class="keyword">instanceof</span> ViewGroup) &#123;</div><div class="line">        ViewGroup vg = (ViewGroup) view;</div><div class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; vg.getChildCount(); i++) &#123;</div><div class="line">            View child = vg.getChildAt(i);</div><div class="line">            <span class="keyword">int</span> childLeft = child.getLeft() - view.getScrollX();</div><div class="line">            <span class="keyword">int</span> childTop = child.getTop() - view.getScrollY();</div><div class="line">            <span class="keyword">int</span> childRight = child.getRight() - view.getScrollX();</div><div class="line">            <span class="keyword">int</span> childBottom = child.getBottom() - view.getScrollY();</div><div class="line">            <span class="keyword">boolean</span> intersects = x &gt; childLeft &amp;&amp; x &lt; childRight &amp;&amp; y &gt; childTop &amp;&amp; y &lt; childBottom;</div><div class="line">            <span class="keyword">if</span> ((!lockRect || intersects)</div><div class="line">                    &amp;&amp; canScrollDown(child, x - childLeft, y - childTop, lockRect)) &#123;</div><div class="line">                <span class="keyword">return</span> <span class="keyword">true</span>;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">if</span> (view <span class="keyword">instanceof</span> CoordinatorLayout &amp;&amp;</div><div class="line">            ((CoordinatorLayout) view).getChildCount() &gt; <span class="number">0</span> &amp;&amp;</div><div class="line">            ((CoordinatorLayout) view).getChildAt(<span class="number">0</span>) <span class="keyword">instanceof</span> AppBarLayout) &#123;</div><div class="line">        AppBarLayout layout = (AppBarLayout) ((CoordinatorLayout) view).getChildAt(<span class="number">0</span>);</div><div class="line">        OnNestOffsetChangedListener listener = mOnOffsetChangedListener.get(layout.hashCode());</div><div class="line">        <span class="keyword">if</span> (listener != <span class="keyword">null</span>) &#123;</div><div class="line">            <span class="keyword">if</span> (listener.getOffsetY() &lt; layout.getMeasuredHeight() &amp;&amp; listener.getOffsetY() &gt; <span class="number">0</span>) &#123;</div><div class="line">                <span class="keyword">return</span> <span class="keyword">true</span>;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">return</span> view.canScrollVertically(<span class="number">1</span>);</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>这部分核心在于递归查询当前 MotionEvent 当前坐标下的所有子 View 有没有可以滚动的 View，从而根据 view.canScrollVertically 来进行判断。</p>
+<h2 id="优势"><a href="#优势" class="headerlink" title="优势"></a>优势</h2><p>1.支持绝大多数的 View 嵌套滚动。<br>2.成本低，只需要在你想要嵌套滚动的 View 上面包一层这个 Layout。</p>
+<h2 id="功能"><a href="#功能" class="headerlink" title="功能"></a>功能</h2><p>1.支持嵌套滚动，无缝拖拽<br>2.支持 BottomSheet (使用方法详见下方)<br>3.支持 Appbarlayout<br>3.支持拖拽阻尼 (使用方法详见下方)</p>
+<h2 id="效果"><a href="#效果" class="headerlink" title="效果"></a>效果</h2><table>
+<thead>
+<tr>
+<th><img src="https://github.com/JarvisGG/NestedTouchScrollingLayout/blob/master/captures/demo1.gif?raw=true" alt="demo1"></th>
+<th style="text-align:center"><img src="https://github.com/JarvisGG/NestedTouchScrollingLayout/blob/master/captures/demo2.gif?raw=true" alt="demo2"></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>normal</td>
+<td style="text-align:center">webview</td>
+</tr>
+<tr>
+<td><img src="https://github.com/JarvisGG/NestedTouchScrollingLayout/blob/master/captures/demo3.gif?raw=true" alt="demo3"></td>
+<td style="text-align:center"><img src="https://github.com/JarvisGG/NestedTouchScrollingLayout/blob/master/captures/demo4.gif?raw=true" alt="demo4"></td>
+</tr>
+<tr>
+<td>bottomsheet normal</td>
+<td style="text-align:center">bottomsheet appbarlayout</td>
+</tr>
+</tbody>
+</table>
+<h3 id="Usage-example"><a href="#Usage-example" class="headerlink" title="Usage example"></a>Usage example</h3><h4 id="normal-use"><a href="#normal-use" class="headerlink" title="normal use"></a>normal use</h4><figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">jarvis.com.library.NestedTouchScrollingLayout</span></span></div><div class="line">    <span class="attr">android:id</span>=<span class="string">"@+id/wrapper"</span></div><div class="line">    <span class="attr">android:layout_gravity</span>=<span class="string">"center"</span></div><div class="line">    <span class="attr">android:layout_width</span>=<span class="string">"match_parent"</span></div><div class="line">    <span class="attr">android:layout_height</span>=<span class="string">"wrap_content"</span>&gt;</div><div class="line"></div><div class="line">    <span class="tag">&lt;<span class="name">android.support.v7.widget.RecyclerView</span></span></div><div class="line">        <span class="attr">android:id</span>=<span class="string">"@+id/container_rv"</span></div><div class="line">        <span class="attr">android:layout_width</span>=<span class="string">"match_parent"</span></div><div class="line">        <span class="attr">android:layout_height</span>=<span class="string">"400dp"</span></div><div class="line">        <span class="attr">android:background</span>=<span class="string">"#fff"</span></div><div class="line">        <span class="attr">android:overScrollMode</span>=<span class="string">"always"</span>&gt;</div><div class="line">    <span class="tag">&lt;/<span class="name">android.support.v7.widget.RecyclerView</span>&gt;</span></div><div class="line"></div><div class="line"><span class="tag">&lt;/<span class="name">jarvis.com.library.NestedTouchScrollingLayout</span>&gt;</span></div></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 设置手指下拉阻尼</span></div><div class="line">mNestedTouchScrollingLayout.setDampingDown(<span class="number">2.0f</span> / <span class="number">5</span>);</div><div class="line"><span class="comment">// 设置手指上拉阻尼</span></div><div class="line">mNestedTouchScrollingLayout.setDampingUp(<span class="number">3.0f</span> / <span class="number">5</span>);</div><div class="line"></div><div class="line">mNestedTouchScrollingLayout.registerNestScrollChildCallback(<span class="keyword">new</span> NestedTouchScrollingLayout.INestChildScrollChange() &#123;</div><div class="line">        </div><div class="line">        <span class="comment">// 当前 Layout 偏移距离</span></div><div class="line">	<span class="meta">@Override</span></div><div class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onNestChildScrollChange</span><span class="params">(<span class="keyword">float</span> deltaY)</span> </span>&#123;</div><div class="line"></div><div class="line">	&#125;</div><div class="line">	</div><div class="line">	<span class="comment">// finger 脱离屏幕 Layout 偏移量，以及当前 Layout 的速度</span></div><div class="line">	<span class="meta">@Override</span></div><div class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onNestChildScrollRelease</span><span class="params">(<span class="keyword">final</span> <span class="keyword">float</span> deltaY, <span class="keyword">final</span> <span class="keyword">int</span> velocityY)</span> </span>&#123;</div><div class="line">		mNestedTouchScrollingLayout.recover(<span class="number">0</span>, <span class="keyword">new</span> Runnable() &#123;</div><div class="line">			<span class="meta">@Override</span></div><div class="line">			<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</div><div class="line">				Log.i(<span class="string">"NestedTouchScrollingLayout ---&gt; "</span>, <span class="string">"deltaY : "</span> + deltaY + <span class="string">" velocityY : "</span> + velocityY);</div><div class="line">			&#125;</div><div class="line">		&#125;);</div><div class="line">	&#125;</div><div class="line">	<span class="comment">// 手指抬起时机</span></div><div class="line">	<span class="meta">@Override</span></div><div class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onFingerUp</span><span class="params">(<span class="keyword">float</span> velocityY)</span> </span>&#123;</div><div class="line"></div><div class="line">	&#125;</div><div class="line"></div><div class="line">	<span class="comment">// 横向拖拽</span></div><div class="line">	<span class="meta">@Override</span></div><div class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onNestChildHorizationScroll</span><span class="params">(MotionEvent event, <span class="keyword">float</span> deltaX, <span class="keyword">float</span> deltaY)</span> </span>&#123;</div><div class="line">	</div><div class="line">	&#125;</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
+<h4 id="bottomsheet-use"><a href="#bottomsheet-use" class="headerlink" title="bottomsheet use"></a>bottomsheet use</h4><figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"> <span class="tag">&lt;<span class="name">jarvis.com.library.NestedTouchScrollingLayout</span></span></div><div class="line">	<span class="attr">android:id</span>=<span class="string">"@+id/wrapper"</span></div><div class="line">	<span class="attr">android:layout_marginTop</span>=<span class="string">"30dp"</span></div><div class="line">	<span class="attr">android:layout_width</span>=<span class="string">"match_parent"</span></div><div class="line">	<span class="attr">android:layout_height</span>=<span class="string">"match_parent"</span>&gt;</div><div class="line"></div><div class="line">	<span class="tag">&lt;<span class="name">android.support.v7.widget.RecyclerView</span></span></div><div class="line">		<span class="attr">android:background</span>=<span class="string">"#fff"</span></div><div class="line">		<span class="attr">android:id</span>=<span class="string">"@+id/container_rv"</span></div><div class="line">		<span class="attr">android:layout_width</span>=<span class="string">"match_parent"</span></div><div class="line">		<span class="attr">android:layout_height</span>=<span class="string">"match_parent"</span> /&gt;</div><div class="line"></div><div class="line"><span class="tag">&lt;/<span class="name">jarvis.com.library.NestedTouchScrollingLayout</span>&gt;</span></div></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 临界速度，根据业务而定</span></div><div class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">int</span> mVelocityYBound = <span class="number">1300</span>;</div><div class="line"></div><div class="line"><span class="comment">// 规定 sheetView 弹起方向</span></div><div class="line">mNestedTouchScrollingLayout.setSheetDirection(NestedTouchScrollingLayout.SheetDirection.BOTTOM);</div><div class="line"></div><div class="line">mNestedTouchScrollingLayout.registerNestScrollChildCallback(<span class="keyword">new</span> NestedTouchScrollingLayout.INestChildScrollChange() &#123;</div><div class="line">	<span class="meta">@Override</span></div><div class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onNestChildScrollChange</span><span class="params">(<span class="keyword">float</span> deltaY)</span> </span>&#123;</div><div class="line"></div><div class="line">	&#125;</div><div class="line"></div><div class="line">	<span class="meta">@Override</span></div><div class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onNestChildScrollRelease</span><span class="params">(<span class="keyword">final</span> <span class="keyword">float</span> deltaY, <span class="keyword">final</span> <span class="keyword">int</span> velocityY)</span> </span>&#123;</div><div class="line">		<span class="keyword">int</span> totalYRange = mNestedTouchScrollingLayout.getMeasuredHeight();</div><div class="line">		<span class="keyword">int</span> helfLimit = (totalYRange - DisplayUtils.dpToPixel(BottomSheetActivity.<span class="keyword">this</span>, <span class="number">400</span>)) / <span class="number">2</span>;</div><div class="line">		<span class="keyword">int</span> hideLimit = totalYRange - DisplayUtils.dpToPixel(BottomSheetActivity.<span class="keyword">this</span>, <span class="number">400</span>) / <span class="number">2</span>;</div><div class="line">		<span class="keyword">int</span> helfHeight = totalYRange - DisplayUtils.dpToPixel(BottomSheetActivity.<span class="keyword">this</span>, <span class="number">400</span>);</div><div class="line">		<span class="keyword">if</span> (velocityY &gt; mVelocityYBound &amp;&amp; velocityY &gt; <span class="number">0</span>) &#123;</div><div class="line">			<span class="keyword">if</span> (Math.abs(deltaY) &gt; helfHeight) &#123;</div><div class="line">				mNestedTouchScrollingLayout.hiden();</div><div class="line">			&#125; <span class="keyword">else</span> &#123;</div><div class="line">				mNestedTouchScrollingLayout.peek(mNestedTouchScrollingLayout.getMeasuredHeight() - DisplayUtils.dpToPixel(BottomSheetActivity.<span class="keyword">this</span>,<span class="number">400</span>));</div><div class="line">			&#125;</div><div class="line">		&#125; <span class="keyword">else</span> <span class="keyword">if</span> (velocityY &lt; -mVelocityYBound &amp;&amp; velocityY &lt; <span class="number">0</span>) &#123;</div><div class="line">			<span class="keyword">if</span> (Math.abs(deltaY) &lt; helfHeight) &#123;</div><div class="line">				mNestedTouchScrollingLayout.expand();</div><div class="line">			&#125; <span class="keyword">else</span> &#123;</div><div class="line">				mNestedTouchScrollingLayout.peek(mNestedTouchScrollingLayout.getMeasuredHeight() - DisplayUtils.dpToPixel(BottomSheetActivity.<span class="keyword">this</span>,<span class="number">400</span>));</div><div class="line">			&#125;</div><div class="line">		&#125; <span class="keyword">else</span> &#123;</div><div class="line">			<span class="keyword">if</span> (Math.abs(deltaY) &gt; hideLimit) &#123;</div><div class="line">				mNestedTouchScrollingLayout.hiden();</div><div class="line">			&#125; <span class="keyword">else</span> <span class="keyword">if</span> (Math.abs(deltaY) &gt; helfLimit) &#123;</div><div class="line">				mNestedTouchScrollingLayout.peek(mNestedTouchScrollingLayout.getMeasuredHeight() - DisplayUtils.dpToPixel(BottomSheetActivity.<span class="keyword">this</span>, <span class="number">400</span>));</div><div class="line">			&#125; <span class="keyword">else</span> &#123;</div><div class="line">				mNestedTouchScrollingLayout.expand();</div><div class="line">			&#125;</div><div class="line">		&#125;</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	<span class="meta">@Override</span></div><div class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onFingerUp</span><span class="params">(<span class="keyword">float</span> velocityY)</span> </span>&#123;</div><div class="line"></div><div class="line">	&#125;</div><div class="line"></div><div class="line">	<span class="meta">@Override</span></div><div class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onNestChildHorizationScroll</span><span class="params">(MotionEvent event, <span class="keyword">float</span> deltaX, <span class="keyword">float</span> deltaY)</span> </span>&#123;</div><div class="line"></div><div class="line">	&#125;</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
+<h3 id="Next"><a href="#Next" class="headerlink" title="Next"></a>Next</h3><ul>
+<li>[x] hold all touch event, and dispath touch event to child view.</li>
+<li>[x] fix ACTION_UP dispatch child click event.</li>
+<li>[x] support bottomsheet.</li>
+<li>[x] support CoordinatorLayout (AppbarLayout).</li>
+<li>[x] add damping draging.</li>
+</ul>
+<h3 id="Usage"><a href="#Usage" class="headerlink" title="Usage"></a>Usage</h3><p>方式 1:<br><figure class="highlight gradle"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">repositories</span> &#123;</div><div class="line">    <span class="comment">// ...</span></div><div class="line">    maven &#123; url <span class="string">"https://jitpack.io"</span> &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">dependencies</span> &#123;</div><div class="line">    implementation <span class="string">'com.github.JarvisGG:NestedTouchScrollingLayout:v1.2.0'</span></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>方式 2:<br><figure class="highlight gradle"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">repositories</span> &#123;</div><div class="line">    <span class="comment">// ...</span></div><div class="line">    jcenter()</div><div class="line">&#125;</div><div class="line"><span class="keyword">dependencies</span> &#123;</div><div class="line">    implementation <span class="string">'com.jarvis.library.NestedTouchScrollingLayout:library:1.2.0'</span></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Android-开源控件/" rel="tag"># Android 开源控件</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/11/01/ObjectAdapter 扩展RecyclerView Adapter的方式/" rel="next" title="ObjectAdapter 扩展RecyclerView Adapter的方式">
+                <i class="fa fa-chevron-left"></i> ObjectAdapter 扩展RecyclerView Adapter的方式
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="https://avatars3.githubusercontent.com/u/7964606?v=3&s=460"
+               alt="Jarvis" />
+          <p class="site-author-name" itemprop="name">Jarvis</p>
+           
+              <p class="site-description motion-element" itemprop="description">搬砖技术哪家强</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">8</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">5</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/JarvisGG/" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/u/3237473092" target="_blank" title="微博">
+                  
+                    <i class="fa fa-fw fa-weibo"></i>
+                  
+                  微博
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://www.jianshu.com/u/39f506fa1259" target="_blank" title="简书">
+                  
+                    <i class="fa fa-fw fa-heartbeat"></i>
+                  
+                  简书
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/yang-yu-fei-32" target="_blank" title="知乎">
+                  
+                    <i class="fa fa-fw fa-twitter"></i>
+                  
+                  知乎
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              友情链接
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://developer.android.com/design/material/index.html" title="Material Design" target="_blank">Material Design</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#调研"><span class="nav-number">2.</span> <span class="nav-text">调研</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-NestedScrolling"><span class="nav-number">2.1.</span> <span class="nav-text">1.NestedScrolling:</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-自定义-ViewGroup"><span class="nav-number">2.2.</span> <span class="nav-text">2.自定义 ViewGroup</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#解决方案"><span class="nav-number">3.</span> <span class="nav-text">解决方案</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#step-1"><span class="nav-number">3.1.</span> <span class="nav-text">step 1:</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#step2"><span class="nav-number">3.2.</span> <span class="nav-text">step2:</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#step3"><span class="nav-number">3.3.</span> <span class="nav-text">step3:</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#优势"><span class="nav-number">4.</span> <span class="nav-text">优势</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#功能"><span class="nav-number">5.</span> <span class="nav-text">功能</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#效果"><span class="nav-number">6.</span> <span class="nav-text">效果</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Usage-example"><span class="nav-number">6.1.</span> <span class="nav-text">Usage example</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#normal-use"><span class="nav-number">6.1.1.</span> <span class="nav-text">normal use</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#bottomsheet-use"><span class="nav-number">6.1.2.</span> <span class="nav-text">bottomsheet use</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Next"><span class="nav-number">6.2.</span> <span class="nav-text">Next</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Usage"><span class="nav-number">6.3.</span> <span class="nav-text">Usage</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2016 - 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Jarvis</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+  
+  <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://https-jarvisgg-github-io.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://yoursite.com/2018/12/05/NestTouchScrollingLayout 无缝滑动的 Layout/';
+          this.page.identifier = '2018/12/05/NestTouchScrollingLayout 无缝滑动的 Layout/';
+          this.page.title = 'NestTouchScrollingLayout 无缝拖拽的 Layout';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://https-jarvisgg-github-io.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
+  <script>AV.initialize("WxpksDsmdpHlocQtkjq1BIj9-gzGzoHsz", "tFyNe3lAO54ROAxWBTkY7YEG");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
